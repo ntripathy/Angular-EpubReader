@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
-import Epub from "epubjs";
-import Book from "epubjs/types/book";
-import Rendition from "epubjs/types/rendition";
-import defer from "epubjs/lib/utils/core";
-import {NavItem} from "epubjs/types/navigation";
+import {Router} from '@angular/router';
+import Epub from 'epubjs';
+import Book from 'epubjs/types/book';
+import Rendition from 'epubjs/types/rendition';
+import defer from 'epubjs/lib/utils/core';
+import {NavItem} from 'epubjs/types/navigation';
 
 
 @Component({
@@ -18,36 +18,53 @@ export class ReaderComponent implements OnInit {
   title: string;
   book: Book;
   rendition: Rendition;
-  chapters:NavItem[];
+  chapters: NavItem[];
+  navOpen: Boolean;
+  currentChapter: any;
 
-  constructor(private router : Router) {
+  constructor(private router: Router) {
   }
 
   ngOnInit() {
-    this.book = Epub("https://s3.amazonaws.com/moby-dick/");
-   // this.book = Epub("http://localhost:8081/reader/moby-dick/", {requestMethod: this.overrideRequest.bind(this)});
+    this.book = Epub('https://s3.amazonaws.com/moby-dick/');
+   // this.book = Epub('http://localhost:8081/reader/moby-dick/', {requestMethod: this.overrideRequest.bind(this)});
     this.book.loaded.metadata.then(meta => {
       this.title = meta.title;
     });
     this.storeChapters();
-    this.rendition = this.book.renderTo("viewer", { flow: "auto", width: "100%", height: "100%" });
-    this.rendition.display("chapter_001.xhtml");
+    this.rendition = this.book.renderTo('viewer', { flow: 'auto', width: '100%', height: '100%' });
+    this.rendition.display('chapter_001.xhtml');
     this.theRequestCallback = this.overrideRequest.bind(this);
+    this.navOpen = false;
   }
 
   showNext() {
-      this.rendition.next()
+      this.rendition.next();
   }
   showPrev() {
-    this.rendition.prev()
+    this.rendition.prev();
   }
   getTitle() {
-    return this.title;
+    if (this.currentChapter) {
+      return this.title + (this.currentChapter.label !== this.title ? ' - ' + this.currentChapter.label : '');
+    } else {
+      return '';
+    }
+  }
+
+  toggleNav() {
+    this.navOpen = !this.navOpen;
+  }
+
+  displayChapter(chapter: any) {
+    this.currentChapter = chapter;
+    this.rendition.display(chapter.href);
   }
 
   private storeChapters() {
     this.book.loaded.navigation.then(navigation => {
       this.chapters = navigation.toc;
+      this.currentChapter = this.chapters[4];
       /*navigation.forEach(x => {
        console.log(x.href);
        return true;
@@ -57,7 +74,7 @@ export class ReaderComponent implements OnInit {
 
   public overrideRequest(url, type, withCredentials, headers) {
       var supportsURL = window.URL;
-      var BLOB_RESPONSE = supportsURL ? "blob" : "arraybuffer";
+      var BLOB_RESPONSE = supportsURL ? 'blob' : 'arraybuffer';
       const blobResponse = BLOB_RESPONSE;
       var deferred = new defer();
       var xhr = new XMLHttpRequest();
@@ -85,13 +102,13 @@ export class ReaderComponent implements OnInit {
           blob = url.indexOf('blob:'),
           doubleSlash = url.indexOf('://'),
           search = url.indexOf('?'),
-          fragment = url.indexOf("#"),
+          fragment = url.indexOf('#'),
           withoutProtocol,
           dot,
           firstSlash;
 
         if(blob === 0) {
-          uri.protocol = "blob";
+          uri.protocol = 'blob';
           uri.base = url.indexOf(0, fragment);
           return uri;
         }
@@ -114,14 +131,14 @@ export class ReaderComponent implements OnInit {
 
           if(firstSlash === -1) {
             uri.host = uri.path;
-            uri.path = "";
+            uri.path = '';
           } else {
             uri.host = withoutProtocol.slice(0, firstSlash);
             uri.path = withoutProtocol.slice(firstSlash);
           }
 
 
-          uri.origin = uri.protocol + "://" + uri.host;
+          uri.origin = uri.protocol + '://' + uri.host;
 
           uri.directory = EPUBJScorefolder(uri.path);
 
@@ -164,7 +181,7 @@ export class ReaderComponent implements OnInit {
           if (type == 'xml') {
             // If this.responseXML wasn't set, try to parse using a DOMParser from text
             if (!this.responseXML) {
-              r = new DOMParser().parseFromString(this.response, "application/xml");
+              r = new DOMParser().parseFromString(this.response, 'application/xml');
             } else {
               r = this.responseXML;
             }
@@ -172,13 +189,13 @@ export class ReaderComponent implements OnInit {
             var text = atob(this.responseXML.body.innerHTML);
             this.responseXML.body.innerHTML = text;
             if (!this.responseXML) {
-              r = new DOMParser().parseFromString(text, "application/xhtml+xml");
+              r = new DOMParser().parseFromString(text, 'application/xhtml+xml');
             } else {
               r = this.responseXML;
             }
           } else if (type == 'html') {
             if (!this.responseXML) {
-              r = new DOMParser().parseFromString(this.response, "text/html");
+              r = new DOMParser().parseFromString(this.response, 'text/html');
             } else {
               r = this.responseXML;
             }
@@ -213,7 +230,7 @@ export class ReaderComponent implements OnInit {
       }
 
       xhr.onreadystatechange = handler;
-      xhr.open("GET", url, true);
+      xhr.open('GET', url, true);
 
       if (withCredentials) {
         xhr.withCredentials = true;
@@ -232,25 +249,25 @@ export class ReaderComponent implements OnInit {
         xhr.responseType = BLOB_RESPONSE as XMLHttpRequestResponseType;
       }
 
-      if (type == "json") {
-        xhr.setRequestHeader("Accept", "application/json");
+      if (type == 'json') {
+        xhr.setRequestHeader('Accept', 'application/json');
       }
 
       if (type == 'xml') {
-        xhr.responseType = "document";
+        xhr.responseType = 'document';
         xhr.overrideMimeType('text/xml'); // for OPF parsing
       }
 
       if (type == 'xhtml') {
-        xhr.responseType = "document";
+        xhr.responseType = 'document';
       }
 
       if (type == 'html') {
-        xhr.responseType = "document";
+        xhr.responseType = 'document';
       }
 
-      if (type == "binary") {
-        xhr.responseType = "arraybuffer";
+      if (type == 'binary') {
+        xhr.responseType = 'arraybuffer';
       }
 
       xhr.send();

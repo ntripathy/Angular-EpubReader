@@ -1,44 +1,25 @@
-<!--<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#" style="text-align: right">Angular EPUB Reader</a>
-</nav>-->
-
-<div id="main">
-
+<div id="main" [ngClass]="{'nav-open' : navOpen}">
   <div id="titlebar">
-    <!--<div id="opener">
-      <a id="slider" class="icon-menu" (click)="showMessage()">Menu</a>
-    </div>-->
     <div id="metainfo">
-      <span id="book-title">{{getTitle()}}</span>
+      <span id="book-title">{{ getTitle() }}</span>
       <span id="title-seperator">&nbsp;&nbsp;–&nbsp;&nbsp;</span>
       <span id="chapter-title"></span>
     </div>
-   <!-- <div id="title-controls">
-      <a id="bookmark" class="icon-bookmark-empty">Bookmark</a>
-      <a id="setting" class="icon-cog">Settings</a>
-      <a id="fullscreen" class="icon-resize-full">Fullscreen</a>
-    </div>-->
   </div>
-  <!--<div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    &lt;!&ndash;<ul>
-      <li *ngFor="let element of chapters" style="color:ivory" >
-        {{element.label}}
-      </li>
-    </ul>&ndash;&gt;
+  <div class="sidebar-nav" (click)="toggleNav()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div class="sidenav">
     <div *ngFor="let chapter of chapters">
-      <a href="{{chapter.href}}">{{chapter.label}}</a>
+      <a class="toc-link" href="javascript:void(0)" (click)="displayChapter(chapter)">{{ chapter.label }}</a>
     </div>
   </div>
-  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>-->
-
-
   <div id="divider"></div>
   <div id="prev" class="arrow" (click)="showPrev()">‹</div>
   <div id="viewer"></div>
   <div id="next" class="arrow" (click)="showNext()">›</div>
-
- <!-- <div id="loader"><img src="img/loader.gif"></div>-->
 </div>
 
 
