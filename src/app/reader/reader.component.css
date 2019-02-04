@@ -180,10 +180,9 @@ body {
 }
 
 #viewer {
-  width: 80%;
+  width: calc(80vw - 270px);
   height: 80%;
-  /* margin-left: 10%; */
-  margin: 40px auto 0 350px;
+  margin: 40px 75px 0 350px;
   max-width: 1250px;
   z-index: 2;
   position: relative;
