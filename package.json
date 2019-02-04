@@ -1,5 +1,5 @@
 {
-  "name": "ePub Reader using EPUBJS and Angular",
+  "name": "epub-reader-angular-and-epubjs",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
