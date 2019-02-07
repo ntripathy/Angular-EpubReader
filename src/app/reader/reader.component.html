@@ -20,21 +20,14 @@
   <div id="next" class="arrow" (click)="showNext()">›</div>
 </div>
 
-<div class="modal fade" bsModal #staticModal="bs-modal" [config]="{ backdrop: 'static' }" tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 id="dialog-static-name" class="modal-title pull-left">Static modal</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="staticModal.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        This is static modal, backdrop click will not close it.
-        Click <b>&times;</b> to close modal.
-      </div>
-    </div>
+<ng-template #expiredModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Time's Up</h4>
   </div>
-</div>
-
-
+  <div class="modal-body">
+    <h3 class="lead">If you wish you continue reading this book, please subscribe.</h3>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-right btn btn-ebook" aria-label="Close" (click)="onSubscribeClick()">Subscribe</button>
+  </div>
+</ng-template>

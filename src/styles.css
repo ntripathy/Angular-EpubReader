@@ -19,4 +19,26 @@
   height: 92px;
 }
 
+/* Modal Style Overrides */
 
+.ebooks-modal.modal-dialog {
+  margin-top: 200px;
+}
+
+.ebooks-modal .modal-content {
+  box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.4);
+}
+
+.ebooks-modal .modal-content .modal-header {
+  background-color: #118289;
+  color: white;
+}
+
+.modal-backdrop.show {
+  opacity: .6;
+}
+
+button.btn-ebook {
+  background-color: #118289;
+  color: white;
+}

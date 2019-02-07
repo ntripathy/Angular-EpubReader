@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import Epub from 'epubjs';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import Book from 'epubjs/types/book';
 import Rendition from 'epubjs/types/rendition';
 import {NavItem} from 'epubjs/types/navigation';
-import {EpubJsRequestUtil} from './EpubJsRequestUtil';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { ModalComponent } from '../modal/modal.component';
+import { ApiService } from '../api.service';
+import { EbooksEpubService } from '../ebooks-epub.service';
+import { timer } from 'rxjs';
+import { validate } from 'codelyzer/walkerFactory/walkerFn';
 
 @Component({
   selector: 'app-reader',
@@ -15,8 +17,8 @@ import { ModalComponent } from '../modal/modal.component';
 })
 
 export class ReaderComponent implements OnInit {
-  public theRequestCallback: Function;
-  bsModalRef: BsModalRef;
+  @ViewChild('expiredModal') expiredModal: TemplateRef<any>
+  modalRef: BsModalRef;
   bookTitle = '';
   chapterTitle = '';
   book: Book;
@@ -24,33 +26,64 @@ export class ReaderComponent implements OnInit {
   chapters: NavItem[];
   navOpen: Boolean;
   currentChapter: any;
-  requestUtil: EpubJsRequestUtil = new EpubJsRequestUtil();
+  sessionId: string;
+  pollInterval: any;
 
   constructor(
     private currentRoute: ActivatedRoute,
-    private modalService: BsModalService
+    private api: ApiService,
+    private epubService: EbooksEpubService,
+    private modalService: BsModalService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     console.log('BookID:', this.currentRoute.snapshot.params.id);
-    this.book = Epub('https://s3.amazonaws.com/moby-dick/');
-   // this.book = Epub('http://localhost:8081/reader/moby-dick/', {requestMethod: this.overrideRequest.bind(this)});
-    // this.book = Epub('https://s3.amazonaws.com/moby-dick/');
-    const headers = {'x-ebc-epub-enc': 'true'};
-    this.book = Epub('http://localhost:8080/epubreader/moby-dick/', {requestMethod: this.requestUtil.request.bind(this), requestHeaders: headers});
+    this.book = this.epubService.getBook('moby-dick');
     this.book.loaded.metadata.then(meta => {
       this.bookTitle = meta.title;
     });
     this.storeChapters();
     this.rendition = this.book.renderTo('viewer', { flow: 'auto', width: '100%', height: '100%' });
     this.rendition.display();
-    this.theRequestCallback = this.requestUtil.request.bind(this);
     this.navOpen = false;
     this.rendition.on('rendered', section => {
       this.currentChapter = this.book.navigation.get(section.href);
       this.chapterTitle = this.currentChapter.label;
     });
     // TODO: Look into reloading chapter with page number
+
+    this.getSessionId();
+  }
+
+  getSessionId() {
+    this.api.getSessionID().subscribe(response => {
+      this.sessionId = response.sessionId;
+      this.setPolling();
+    });
+  }
+
+  setPolling() {
+    this.pollInterval = setInterval(() => {
+      this.checkForExpiration();
+    }, 5000);
+  }
+
+  checkForExpiration() {
+    this.api.validateSession(this.sessionId).subscribe(response => {
+      // No Response Needed
+    }, error => {
+      clearInterval(this.pollInterval);
+      if (error.status === 410) {
+        this.modalRef = this.modalService.show(this.expiredModal, {
+          ignoreBackdropClick: true,
+          class: 'modal-lg ebooks-modal',
+          keyboard: false
+        });
+      } else {
+        alert('No session ID found');
+      }
+    });
   }
 
   showNext() {
@@ -60,18 +93,13 @@ export class ReaderComponent implements OnInit {
     this.rendition.prev();
   }
 
-  openModal() {
-    const modalConfig = {
-      title: 'Time\'s Up',
-      modalContent: 'If you wish you continue reading this book, please subscribe.',
-      closeBtn: 'Close'
-    };
-    // this.bsModalRef = this.modalService.show(ModalComponent, {modalConfig});
-  }
-
   toggleNav() {
     this.navOpen = !this.navOpen;
-    console.log(this.rendition.currentLocation());
+  }
+
+  onSubscribeClick() {
+    this.modalService.hide(1);
+    this.router.navigate(['/library']);
   }
 
   displayChapter(chapter: any) {
