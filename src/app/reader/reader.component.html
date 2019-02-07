@@ -1,7 +1,7 @@
 <div class="reader-container" [ngClass]="{'nav-open' : navOpen}">
   <div id="titlebar">
     <div id="metainfo">
-      <span id="book-title">{{ getTitle() }}</span>
+      <span id="book-title">{{ bookTitle + (chapterTitle === bookTitle ? '' : ' - ' + chapterTitle) }}</span>
       <span id="title-seperator">&nbsp;&nbsp;–&nbsp;&nbsp;</span>
       <span id="chapter-title"></span>
     </div>

@@ -5,6 +5,8 @@ import Book from 'epubjs/types/book';
 import Rendition from 'epubjs/types/rendition';
 import defer from 'epubjs/lib/utils/core';
 import { NavItem } from 'epubjs/types/navigation';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-reader',
@@ -14,7 +16,9 @@ import { NavItem } from 'epubjs/types/navigation';
 
 export class ReaderComponent implements OnInit {
   public theRequestCallback: Function;
-  title: string;
+  bsModalRef: BsModalRef;
+  bookTitle = '';
+  chapterTitle = '';
   book: Book;
   rendition: Rendition;
   chapters: NavItem[];
@@ -22,7 +26,8 @@ export class ReaderComponent implements OnInit {
   currentChapter: any;
 
   constructor(
-    private currentRoute: ActivatedRoute
+    private currentRoute: ActivatedRoute,
+    private modalService: BsModalService
   ) {}
 
   ngOnInit() {
@@ -30,33 +35,34 @@ export class ReaderComponent implements OnInit {
     this.book = Epub('https://s3.amazonaws.com/moby-dick/');
    // this.book = Epub('http://localhost:8081/reader/moby-dick/', {requestMethod: this.overrideRequest.bind(this)});
     this.book.loaded.metadata.then(meta => {
-      this.title = meta.title;
+      this.bookTitle = meta.title;
     });
     this.storeChapters();
     this.rendition = this.book.renderTo('viewer', { flow: 'auto', width: '100%', height: '100%' });
     this.rendition.display('chapter_001.xhtml');
     this.theRequestCallback = this.overrideRequest.bind(this);
     this.navOpen = false;
+    this.rendition.on('rendered', section => {
+      this.currentChapter = this.book.navigation.get(section.href);
+      this.chapterTitle = this.currentChapter.label;
+    });
+    // TODO: Look into reloading chapter with page number
   }
 
   showNext() {
     this.rendition.next();
-    this.getTitle();
-    // TODO: Update the currentChapter on page change
-    // TODO: Look into reloading chapter with page number
-    // console.log(this.rendition.location);
   }
   showPrev() {
     this.rendition.prev();
-    this.getTitle();
-    // TODO: Update the currentChapter on page change
   }
-  getTitle() {
-    if (this.currentChapter) {
-      return this.title + (this.currentChapter.label !== this.title ? ' - ' + this.currentChapter.label : '');
-    } else {
-      return '';
-    }
+
+  openModal() {
+    const modalConfig = {
+      title: 'Time\'s Up',
+      modalContent: 'If you wish you continue reading this book, please subscribe.',
+      closeBtn: 'Close'
+    };
+    // this.bsModalRef = this.modalService.show(ModalComponent, {modalConfig});
   }
 
   toggleNav() {

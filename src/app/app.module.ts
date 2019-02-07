@@ -1,20 +1,23 @@
+// Core Angular
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
+// Plugins
+import { ModalModule } from 'ngx-bootstrap/modal';
+
+// App Specific
 import { AppComponent } from './app.component';
 import { LibraryComponent } from './library/library.component';
 import { ReaderComponent } from './reader/reader.component';
 import { RouterConfig } from './routerConfig';
-import { ModalModule } from 'ngx-bootstrap/modal';
-
-const socketConfig: SocketIoConfig = { url: 'http://localhost:8080/timer', options: {} };
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LibraryComponent,
-    ReaderComponent
+    ReaderComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
