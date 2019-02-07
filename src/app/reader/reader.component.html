@@ -1,7 +1,7 @@
-<div id="main" [ngClass]="{'nav-open' : navOpen}">
+<div class="reader-container" [ngClass]="{'nav-open' : navOpen}">
   <div id="titlebar">
     <div id="metainfo">
-      <span id="book-title">{{ getTitle() }}</span>
+      <span id="book-title">{{ bookTitle + (chapterTitle === bookTitle ? '' : ' - ' + chapterTitle) }}</span>
       <span id="title-seperator">&nbsp;&nbsp;–&nbsp;&nbsp;</span>
       <span id="chapter-title"></span>
     </div>
@@ -12,14 +12,29 @@
     <span></span>
   </div>
   <div class="sidenav">
-    <div *ngFor="let chapter of chapters">
-      <a class="toc-link" href="javascript:void(0)" (click)="displayChapter(chapter)">{{ chapter.label }}</a>
-    </div>
+    <a class="toc-link" href="javascript:void(0)" *ngFor="let chapter of chapters" (click)="displayChapter(chapter)">{{ chapter.label }}</a>
   </div>
   <div id="divider"></div>
   <div id="prev" class="arrow" (click)="showPrev()">‹</div>
   <div id="viewer"></div>
   <div id="next" class="arrow" (click)="showNext()">›</div>
+</div>
+
+<div class="modal fade" bsModal #staticModal="bs-modal" [config]="{ backdrop: 'static' }" tabindex="-1" role="dialog" aria-labelledby="dialog-static-name">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-static-name" class="modal-title pull-left">Static modal</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="staticModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This is static modal, backdrop click will not close it.
+        Click <b>&times;</b> to close modal.
+      </div>
+    </div>
+  </div>
 </div>
 
 

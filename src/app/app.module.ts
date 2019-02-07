@@ -1,19 +1,28 @@
+// Core Angular
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { ReaderComponent } from './reader/reader.component';
+// Plugins
+import { ModalModule } from 'ngx-bootstrap/modal';
 
-import {RouterConfig} from  './routerConfig';
+// App Specific
+import { AppComponent } from './app.component';
+import { LibraryComponent } from './library/library.component';
+import { ReaderComponent } from './reader/reader.component';
+import { RouterConfig } from './routerConfig';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ReaderComponent
+    LibraryComponent,
+    ReaderComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
-    RouterConfig
+    RouterConfig,
+    ModalModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

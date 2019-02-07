@@ -1,0 +1,15 @@
+<div class="library-container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="library-title">My Library</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <select class="form-control" (change)="onTitleSelect($event)">
+        <option>Please Select a Title...</option>
+        <option *ngFor="let book of books" value="{{ book.id }}">{{ book.title }}</option>
+      </select>
+    </div>
+  </div>
+</div>
