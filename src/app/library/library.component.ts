@@ -8,11 +8,17 @@ import { Router } from '@angular/router';
 })
 export class LibraryComponent implements OnInit {
   books = [{
-    id: '1A2B3C4D',
-    title: 'Moby Dick'
+    id: 9780128163627,
+    title: '9780128163627'
   }, {
-    id: '5E6F7G8H',
-    title: 'A Tale of Two Cities'
+    id: 9780226008240,
+    title: '9780226008240'
+  }, {
+    id: 9780739603468,
+    title: 'Let\'s Talk About Feeling Inferior'
+  }, {
+    id: 9781406684520,
+    title: 'Talk Japanese'
   }];
 
   constructor(
