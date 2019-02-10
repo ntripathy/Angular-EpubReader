@@ -53,7 +53,7 @@ export class ReaderComponent implements OnInit {
     this.navOpen = false;
     this.rendition.on('rendered', section => {
       this.currentChapter = this.book.navigation.get(section.href);
-      this.chapterTitle = this.currentChapter.label;
+      this.chapterTitle = this.currentChapter ? this.currentChapter.label : '';
     });
     // TODO: Look into reloading chapter with page number
 
