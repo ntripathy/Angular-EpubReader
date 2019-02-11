@@ -48,7 +48,6 @@ export class ReaderComponent implements OnInit {
     this.book.loaded.metadata.then(meta => {
       this.bookTitle = meta.title;
     });
-    // this.epubService.getAnnotations(this.currentRoute.snapshot.params.id);
     this.storeChapters();
     this.rendition = this.book.renderTo('viewer', { flow: 'auto', width: '100%', height: '100%' });
     this.rendition.display();
@@ -59,9 +58,12 @@ export class ReaderComponent implements OnInit {
     });
 
     this.epubService.getAnnotations(this.currentRoute.snapshot.params.id).subscribe( response => {
-      const cfis = response.epubCfis;
-      for(let cfi of cfis) {
-        this.rendition.annotations.add('highlight', cfi, {data: 'Testing'}, (e) => {console.log("highlight clicked", e.target);} , "hl", {"fill": "red", "fill-opacity": "0.3", "mix-blend-mode": "multiply"});
+      for (const cfi of response.epubCfis) {
+        this.rendition.annotations.add('highlight', cfi, {data: 'Testing'}, (e) => {
+              console.log('highlight clicked', e.target);
+            }, 'hl',
+            {'fill': 'red', 'fill-opacity': '0.3', 'mix-blend-mode': 'multiply'}
+          );
       }
     });
 
