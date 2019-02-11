@@ -40,6 +40,7 @@ export class ReaderComponent implements OnInit {
   ngOnInit() {
     console.log('BookID:', this.currentRoute.snapshot.params.id);
     this.book = this.epubService.getBook('moby-dick');
+   this.epubService.getAnnotations('moby');
     this.book.loaded.metadata.then(meta => {
       this.bookTitle = meta.title;
     });
@@ -51,6 +52,14 @@ export class ReaderComponent implements OnInit {
       this.currentChapter = this.book.navigation.get(section.href);
       this.chapterTitle = this.currentChapter.label;
     });
+
+    this.epubService.getAnnotations('moby').subscribe( response => {
+      const cfis = response.epubCfis;
+      for(let cfi of cfis) {
+        this.rendition.annotations.add('highlight', cfi, {data: 'Testing'}, (e) => {console.log("highlight clicked", e.target);} , "hl", {"fill": "red", "fill-opacity": "0.3", "mix-blend-mode": "multiply"});
+      }
+    });
+
     // TODO: Look into reloading chapter with page number
 
     this.getSessionId();
