@@ -24,7 +24,7 @@ export class EbooksEpubService {
   }
 
   public getAnnotations(bookId: string) {
-    return this.http.get(baseAPI + '/epub/highlights/' + bookId);
+    return this.http.get(baseAPI + '/epub/annotations/' + bookId);
   }
 
 }

@@ -31,3 +31,15 @@
     <button type="button" class="pull-right btn btn-ebook" aria-label="Close" (click)="onSubscribeClick()">Subscribe</button>
   </div>
 </ng-template>
+
+<ng-template #blockedModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Restricted</h4>
+  </div>
+  <div class="modal-body">
+    <h3 class="lead">You are not allowed to view this content. Please contact your administrator.</h3>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-right btn btn-ebook" aria-label="Close" (click)="onSubscribeClick()">Go to My Library</button>
+  </div>
+</ng-template>
