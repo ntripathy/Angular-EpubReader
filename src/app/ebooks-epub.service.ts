@@ -20,8 +20,7 @@ export class EbooksEpubService {
 
   public getBook(bookId: string) {
     return Epub('http://localhost:8080/epubreader/' + bookId + '/', {
-      requestMethod: this.requestUtil.request.bind(this),
-      requestHeaders: { 'x-ebc-epub-enc': 'true' }
+      requestMethod: this.requestUtil.request.bind(this)
     });
   }
 
