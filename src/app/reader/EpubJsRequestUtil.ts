@@ -1,6 +1,5 @@
 import defer from 'epubjs/lib/utils/core';
 import * as RSVP from 'rsvp';
-import {AesUtils} from './AesUtil';
 export class EpubJsRequestUtil {
 
 
@@ -107,24 +106,7 @@ export class EpubJsRequestUtil {
                         });
                         return deferred.promise;
                     }
-
-                    this._response = this.response;
-                    const encrypted = true;
-                    if(encrypted) {
-
-                        const iterationCount = 10;
-                        const keySize = 128;
-                        const passphrase = 'fX64kY';
-
-                        const four = '9a2b73d130c8796309b776eeb09834b0';
-                        const salt = '577bd45a17977269694908d80905c32a';
-
-                        const aesUtil = new AesUtils(keySize, iterationCount);
-                        const decrypted = aesUtil.decrypt(salt, four, passphrase, this.response);
-
-                        this._response = decrypted;
-                    }
-
+            
                     if(responseXML){
                         r = this.responseXML;
                     } else
